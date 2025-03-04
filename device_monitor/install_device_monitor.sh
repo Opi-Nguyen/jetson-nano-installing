@@ -6,6 +6,8 @@ echo "Installing dependencies..."
 sudo apt update -y
 sudo apt install -y python3-pip
 
+pip3 install netifaces
+
 echo "Copying device monitor script..."
 sudo mkdir -p /opt/device_monitor
 sudo cp device_monitor/device_monitor.py /opt/device_monitor/

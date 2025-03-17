@@ -1,11 +1,3 @@
-# pip3 install --upgrade pip setuptools wheel
-# pip3 install setuptools-rust
-# pip3 install docker-compose
-# export PATH=$HOME/.local/bin:$PATH
-# echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
-# source ~/.bashrc
-# docker-compose --version
-
 #!/bin/bash
 
 echo "Starting docker-compose installation..."
@@ -29,6 +21,12 @@ if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
     echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
     source ~/.bashrc
 fi
+
+# Add user to the docker group
+echo "Adding user to the docker group..."
+sudo groupadd docker  # Ensure docker group exists
+sudo usermod -aG docker $USER  # Add current user to docker group
+newgrp docker  # Apply changes immediately
 
 # Verify installation
 echo "Checking docker-compose version..."

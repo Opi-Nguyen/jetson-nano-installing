@@ -38,7 +38,7 @@ def get_ip_addresses():
         time.sleep(5)
 
 def continuously_update_ip():
-    """Cập nhật IP vào file ~/.device_info mỗi 10 giây"""
+    """Cập nhật IP vào file ~/.device_info mỗi 5 giây"""
     while True:
         public_ip, local_ip = get_ip_addresses()
         device_info = load_device_info()
@@ -48,7 +48,7 @@ def continuously_update_ip():
             save_device_info(device_info)
             print(f"🔄 Cập nhật IP: Public: {public_ip}, Local: {local_ip}")
 
-        time.sleep(10)
+        time.sleep(5)
 
 def check_server_access(domain):
     """Kiểm tra xem server có thể truy cập được không"""

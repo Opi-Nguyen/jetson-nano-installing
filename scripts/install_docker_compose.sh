@@ -2,6 +2,12 @@
 
 echo "Starting docker-compose installation..."
 
+echo "Updating package lists..."
+sudo apt update -y
+
+echo "Installing python3-pip..."
+sudo apt install -y python3-pip
+
 # Update pip, setuptools, and wheel
 echo "Updating pip, setuptools, and wheel..."
 pip3 install --upgrade pip setuptools wheel

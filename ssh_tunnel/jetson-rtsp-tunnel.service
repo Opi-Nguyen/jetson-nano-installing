@@ -1,0 +1,13 @@
+[Unit]
+Description=Jetson RTSP Reverse SSH Tunnel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/jetson_rtsp_tunnel/start_tunnel.py
+Restart=always
+RestartSec=10
+User=root
+
+[Install]
+WantedBy=multi-user.target

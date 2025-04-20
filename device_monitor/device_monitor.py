@@ -100,6 +100,9 @@ def init_device_id():
 
         url = f"{server}:{PORT}{INIT_DEVICE_API}"
         try:
+            public_ip, local_ip = get_ip_addresses()
+            device_info.update({"public_ip": public_ip, "local_ip": local_ip})
+            save_device_info(device_info)
             response = requests.post(url, json={"public_ip": public_ip, "local_ip": local_ip}, timeout=5)
             if response.status_code == 200:
                 device_id = response.json().get("device_id")

@@ -18,7 +18,7 @@ pip3 install setuptools-rust
 
 # Install docker-compose
 echo "Installing docker-compose..."
-pip3 install --user docker-compose
+sudo pip3 install docker-compose
 
 # Add ~/.local/bin to PATH if not already present
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
@@ -30,9 +30,11 @@ fi
 
 # Add user to the docker group
 echo "Adding user to the docker group..."
-sudo groupadd docker  # Ensure docker group exists
-sudo usermod -aG docker $USER  # Add current user to docker group
-newgrp docker  # Apply changes immediately
+# sudo groupadd docker  # Ensure docker group exists
+# sudo usermod -aG docker $USER  # Add current user to docker group
+# newgrp docker  # Apply changes immediately
+sudo groupadd docker 2>/dev/null || true
+sudo usermod -aG docker $USER
 
 # Verify installation
 echo "Checking docker-compose version..."

@@ -1,50 +1,44 @@
 #!/bin/bash
 
-echo "Starting docker-compose installation..."
+set -e
 
-echo "Updating package lists..."
-sudo apt update -y
+echo "🚀 Bắt đầu cài đặt Docker Compose (plugin chính thức) cho Jetson Nano..."
 
-echo "Installing python3-pip..."
-sudo apt install -y python3-pip
-
-# Update pip, setuptools, and wheel
-echo "Updating pip, setuptools, and wheel..."
-pip3 install --upgrade pip setuptools wheel
-
-# Install setuptools-rust (required for some dependencies)
-echo "Installing setuptools-rust..."
-pip3 install setuptools-rust
-
-# Install docker-compose
-echo "Installing docker-compose..."
-sudo pip3 install docker-compose
-
-# Add ~/.local/bin to PATH if not already present
-if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    echo "Adding ~/.local/bin to PATH..."
-    export PATH=$HOME/.local/bin:$PATH
-    echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
-    source ~/.bashrc
-fi
-
-# Add user to the docker group
-echo "Adding user to the docker group..."
-# sudo groupadd docker  # Ensure docker group exists
-# sudo usermod -aG docker $USER  # Add current user to docker group
-# newgrp docker  # Apply changes immediately
-sudo groupadd docker 2>/dev/null || true
-sudo usermod -aG docker $USER
-
-# Verify installation
-echo "Checking docker-compose version..."
-docker_compose_version=$(docker-compose --version 2>/dev/null)
-
-if [[ $? -eq 0 ]]; then
-    echo "✅ Docker Compose installed successfully: $docker_compose_version"
-else
-    echo "❌ Docker Compose installation failed."
+# Kiểm tra Docker đã được cài hay chưa
+if ! command -v docker &> /dev/null; then
+    echo "❌ Docker chưa được cài. Hãy cài Docker trước khi tiếp tục."
     exit 1
 fi
 
-echo "Installation completed!"
+# Cài curl nếu chưa có
+if ! command -v curl &> /dev/null; then
+    echo "🔧 curl chưa có, đang cài đặt..."
+    sudo apt update
+    sudo apt install -y curl
+else
+    echo "✅ curl đã được cài."
+fi
+
+# Tạo thư mục plugin nếu chưa tồn tại
+mkdir -p ~/.docker/cli-plugins
+
+# Tải Docker Compose plugin (dành cho Jetson Nano - aarch64)
+echo "⬇️ Đang tải docker-compose plugin..."
+curl -SL https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-aarch64 \
+    -o ~/.docker/cli-plugins/docker-compose
+
+# Cấp quyền thực thi
+chmod +x ~/.docker/cli-plugins/docker-compose
+
+# Kiểm tra phiên bản
+echo "🔍 Kiểm tra phiên bản docker compose..."
+docker compose version
+
+# Thêm user hiện tại vào nhóm docker
+echo "👤 Thêm người dùng '$USER' vào nhóm docker..."
+sudo groupadd docker 2>/dev/null || true
+sudo usermod -aG docker $USER
+
+echo "✅ Cài đặt Docker Compose plugin thành công!"
+echo "🔁 Vui lòng **logout hoặc reboot** để áp dụng quyền nhóm docker."
+echo "👉 Sau đó bạn có thể dùng: docker compose up -d"
